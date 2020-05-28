@@ -1,3 +1,4 @@
+drop table if exists flf_weather_supply_demand;
 create table flf_weather_supply_demand as(
 with daypart_mapping as (
   SELECT 
@@ -35,8 +36,8 @@ SELECT
   dd.STORE_STARTING_POINT_ID,
   dd.SUBMARKET_ID,
   dd.flf,
-  fces.num_delivered as num_delivered, --added by Chi. total number of deliveries
-  fces.num_opened as num_opened,  --added by Chi.
+  fces.num_delivered as num_delivered,
+  fces.num_opened as num_opened,
   sm.LAUNCH_DATE as submarket_launch_date,
   convert_timezone('UTC', dd.TIMEZONE, dd.CREATED_AT) as created_at_local,
   TO_DATE(created_at_local) as created_at_local_date,
@@ -44,7 +45,7 @@ SELECT
   datediff('second', dd.CREATED_AT, dd.ACTUAL_DELIVERY_TIME)/60.0 as asap,
   dd.DISTINCT_ACTIVE_DURATION/60.0 as dat,
   datediff('second', dd.DASHER_CONFIRMED_TIME, dd.DASHER_AT_STORE_TIME)/60.0 as d2r,
-  TRUNC(created_at, 'HOUR') as created_at_hour, --added by Chi to get hourly weather feature
+  TRUNC(created_at, 'HOUR') as created_at_hour, 
   case when datediff('second', dd.QUOTED_DELIVERY_TIME, dd.ACTUAL_DELIVERY_TIME)/60 > 20 then 1 else 0 END as lateness_20_min,
   flf.daypart,
   case when dd.flf - flf.MAX_TARGET_FLF_RANGE > 0 then 1 else 0 END as is_flf_above_max,
@@ -68,7 +69,7 @@ WHERE dd.created_at between '2020-03-16' and '2020-04-27'
   AND fulfillment_type != 'merchant_fleet'
 )
 ,
---add hourly weather features. Added by Chi
+
 flf_weather as(
 select
   flf_raw.*,
@@ -89,10 +90,10 @@ select
   from flf_raw
 left join fact_weather_hour weather
   on weather.hour_utc = flf_raw.created_at_hour
+  and weather.STARTING_POINT_ID = flf_raw.STORE_STARTING_POINT_ID
 )
 ,
 
---add supply demand features. Added by Chi
 supply_demand_hist as(
 select
       distinct active_date
@@ -105,11 +106,11 @@ select
   1
   and metadata ilike '%6day%'
   and active_date >= '2020-03-16'::date - interval '8 days'
-  order by 1, 2, 3, 4
+  and active_date <= '2020-04-27'
+//  order by 1, 2, 3, 4
 )
 ,
 
---integrate flf with weather and supply/demand features. Added by Chi
 flf_weather_supply_demand_hist as(
 select 
   flf_weather.*,
@@ -122,4 +123,4 @@ join supply_demand_hist sdh
 )
 
 select * from flf_weather_supply_demand_hist
-)
+  )
