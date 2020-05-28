@@ -1,0 +1,1 @@
+select * from PRODDB.PUBLIC.DIMENSION_DELIVERIES dd  limit 10
