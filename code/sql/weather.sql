@@ -41,6 +41,8 @@ SELECT
   sm.LAUNCH_DATE as submarket_launch_date,
   convert_timezone('UTC', dd.TIMEZONE, dd.CREATED_AT) as created_at_local,
   TO_DATE(created_at_local) as created_at_local_date,
+  DAYOFWEEK(created_at_local) as day_of_week,
+  hour(created_at_local) as hour_of_day,
   hour(created_at_local) * 2 + floor(minute(created_at_local)/30.0) as window_id,
   datediff('second', dd.CREATED_AT, dd.ACTUAL_DELIVERY_TIME)/60.0 as asap,
   dd.DISTINCT_ACTIVE_DURATION/60.0 as dat,
