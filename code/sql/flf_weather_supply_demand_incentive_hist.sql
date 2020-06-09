@@ -103,7 +103,7 @@ select
 from flf_raw raw
 left join flf_raw_hourly_avg_flf hist 
   on
-      hist.created_at_date_hour  = date_trunc('HOUR', (dateadd(day, -7, raw.created_at))) --same hour 7 days ago
+      hist.created_at_date_hour  = date_trunc('HOUR', (dateadd(day, -14, raw.created_at))) --same hour 7 days ago
   and hist.STORE_STARTING_POINT_ID = raw.STORE_STARTING_POINT_ID -- same sp
 )
 ,
