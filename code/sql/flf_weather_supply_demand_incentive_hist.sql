@@ -95,7 +95,8 @@ select
   raw.STORE_STARTING_POINT_ID,
   raw.submarket_id,
   raw.window_id,
-  hist.hourly_avg_flf as p2w_hourly_avg_flf,
+  raw.is_flf_above_ideal,
+  hist.hourly_avg_flf as pw_hourly_avg_flf,
   hist.hourly_avg_is_flf_above_ideal as pw_hourly_avg_is_flf_above_ideal,
   hist.hourly_avg_is_flf_above_max as pw_hourly_avg_is_flf_above_max,
   hist.hourly_avg_DASHER_PAY_OTHER as pw_hourly_avg_DASHER_PAY_OTHER
