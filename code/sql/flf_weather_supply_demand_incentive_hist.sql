@@ -28,6 +28,7 @@ FROM STATIC.LOOKUP_TARGET_FLF_BY_REGION flf
 LEFT JOIN daypart_mapping dp 
   on flf.TIME_OF_DAY = dp.DAYPART
 ),
+  
 flf_raw as (
 SELECT
   dd.created_at,
@@ -77,6 +78,9 @@ flf_raw_hist as(
 select 
   raw.created_at,
   raw.delivery_id,
+  raw.day_of_week,
+  raw.hour_of_day,
+  raw.daypart,
   raw.STORE_STARTING_POINT_ID,
   raw.submarket_id,
   raw.window_id,
@@ -140,8 +144,7 @@ join supply_demand sdh
 )
 
 select * from flf_weather_supply_demand_hist
-  )
-  
+)
   
 //  select count(*) from flf_weather_supply_demand_hist_incentive
 //select * from flf_weather_supply_demand_hist_incentive
