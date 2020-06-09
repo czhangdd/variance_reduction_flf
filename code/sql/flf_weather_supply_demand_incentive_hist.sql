@@ -72,8 +72,19 @@ WHERE dd.created_at between '2020-04-20' and '2020-05-30'
   AND dd.IS_CONSUMER_PICKUP = false 
   AND fulfillment_type != 'merchant_fleet'
 )
-,
+,  
 
+flf_raw_hourly_avg_flf as(
+select STORE_STARTING_POINT_ID
+     , date_trunc('HOUR', created_at) as created_at_date_hour
+     , avg(flf) as hourly_avg_flf
+     , avg(is_flf_above_ideal) as hourly_avg_is_flf_above_ideal
+     , avg(is_flf_above_max) as hourly_avg_is_flf_above_max
+     , avg(DASHER_PAY_OTHER) as hourly_avg_DASHER_PAY_OTHER
+from flf_raw
+group by 1, 2
+)
+,
 flf_raw_hist as(
 select 
   raw.created_at,
@@ -84,14 +95,14 @@ select
   raw.STORE_STARTING_POINT_ID,
   raw.submarket_id,
   raw.window_id,
-  hist.flf as p2w_flf,
-  hist.is_flf_above_ideal as p2w_is_flf_above_ideal,
-  hist.is_flf_above_max as p2w_is_flf_above_max,
-  hist.DASHER_PAY_OTHER as p2w_incentive
+  hist.hourly_avg_flf as p2w_hourly_avg_flf,
+  hist.hourly_avg_is_flf_above_ideal as pw_hourly_avg_is_flf_above_ideal,
+  hist.hourly_avg_is_flf_above_max as pw_hourly_avg_is_flf_above_max,
+  hist.hourly_avg_DASHER_PAY_OTHER as pw_hourly_avg_DASHER_PAY_OTHER
 from flf_raw raw
-left join flf_raw hist 
+left join flf_raw_hourly_avg_flf hist 
   on
-      date_trunc('HOUR', hist.created_at)  = date_trunc('HOUR', (dateadd(day, -7, raw.created_at))) --same hour 7 days ago
+      hist.created_at_date_hour  = date_trunc('HOUR', (dateadd(day, -7, raw.created_at))) --same hour 7 days ago
   and hist.STORE_STARTING_POINT_ID = raw.STORE_STARTING_POINT_ID -- same sp
 )
 ,
@@ -145,6 +156,3 @@ join supply_demand sdh
 
 select * from flf_weather_supply_demand_hist
 )
-  
-//  select count(*) from flf_weather_supply_demand_hist_incentive
-//select * from flf_weather_supply_demand_hist_incentive
