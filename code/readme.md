@@ -1,14 +1,14 @@
 ## Steps
 * Generate dataset for model building
 	
-	Run etl queries in doordash-etl-python3 to generate a historcial table ** CHIZHANG.fact_variance_reduction_flf_inputs **. remember to change the time range to at least 4 weeks. Currently use 2020-04-30~2020-05-30, but can use more recent data. DON'T include the most recent 2 weeks.
+	Run etl queries in doordash-etl-python3 to generate a historcial table **CHIZHANG.fact_variance_reduction_flf_inputs**. remember to change the time range to at least 4 weeks. Currently use 2020-04-30~2020-05-30, but can use more recent data. DON'T include the most recent 2 weeks.
 	
 	* Copy the table and save to dbfs 
 	* Training data: at least 2 weeks
 	* Testing data 1 or 2 week(s)
 
 
-* Use the generated data for training notebook ** variance_reduction_v6_etl_live.ipynb **
+* Use the generated data for training notebook **variance_reduction_v6_etl_live.ipynb**
 	* Check a few things to make sure the model has predictive power
 		* Model accuracy
 		* Prediction and ground truth correlation 
