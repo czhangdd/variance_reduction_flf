@@ -15,7 +15,7 @@
 	* Generate a csv or table for simulation -- we need to do this everytime we update the model
 
 * Test in etl
-	* Run etl in doordash-etl-python3 to generate a new ** CHIZHANG.fact_variance_reduction_flf_inputs ** using the ** most recent 2 weeks ** of data
+	* Run etl in doordash-etl-python3 to generate a new **CHIZHANG.fact_variance_reduction_flf_inputs** using the **most recent 2 weeks** of data
 	* Run etl prediction in doordash-etl-python3 to predict is_above_ideal_flf for the 1 or 2 weeks data generated in last step
 
 
